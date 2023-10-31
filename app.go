@@ -1,32 +1,19 @@
 package main
 
 import (
-	"embed"
-	"html/template"
-    	"net/http"
+	"net/http"
 	"os"
 )
 
-//go:embed templates/*
-var templates embed.FS
-var t = template.Must(template.ParseFS(templates, "templates/*"))
-
-//go:embed static/*
-var assets embed.FS
-
-
 func main() {
 	port := "3000"
-	if(os.Getenv("PORT") != "") {
+	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
 	}
 
-    http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-        t.Execute(w, "")
-    })
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, World!"))
+	})
 
-    fs := http.FileServer(http.FS(assets))
-    http.Handle("/static/", fs)
-
-    http.ListenAndServe(":" + port, nil)
+	http.ListenAndServe(":"+port, nil)
 }
